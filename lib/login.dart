@@ -145,51 +145,21 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.title,
-            style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+      body: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(image: AssetImage("assets/holidays-icon.png"), height: 150.0),
+              SizedBox(height: 50),
+              _signInButton(),
+            ],
           ),
-          centerTitle: true,
         ),
-        // body: Column(
-        //   children: [
-        //     Flexible(
-        //       flex: 8,
-        //       child: TransportAnimation(
-        //         type: TransportAnimationType.bus,
-        //         fit: BoxFit.contain,
-        //       ),
-        //     ),
-        //     Flexible(
-        //       flex: 2,
-        //       child: Text(
-        //         'Test',
-        //         style: TextStyle(color: Colors.black54),
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        body: Stack(
-          children: <Widget>[
-            Center(
-              child: _signInButton(),
-            ),
-            // Loading
-            Positioned(
-              child: isLoading
-                  ? Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                        ),
-                      ),
-                      color: Colors.white.withOpacity(0.8),
-                    )
-                  : Container(),
-            ),
-          ],
-        ));
+      ),
+    );
   }
 
   Widget _signInButton() {
