@@ -7,13 +7,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:holidays/chat.dart';
-import 'package:holidays/const.dart';
-import 'package:holidays/login.dart';
-import 'package:holidays/settings.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:holidays/chat.dart';
+import 'package:holidays/const.dart';
+import 'package:holidays/login.dart';
+import 'package:holidays/screens/chats.dart';
+import 'package:holidays/screens/friends.dart';
+import 'package:holidays/screens/home.dart';
+import 'package:holidays/screens/notifications.dart';
+import 'package:holidays/screens/profile.dart';
+import 'package:holidays/settings.dart';
+import 'package:holidays/widgets/icon_badge.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,9 +47,13 @@ class MainScreenState extends State<MainScreen> {
     const Choice(title: 'Log out', icon: Icons.exit_to_app),
   ];
 
+  PageController _pageController;
+  int _page = 2;
+
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: 2);
     registerNotification();
     configLocalNotification();
   }
@@ -228,83 +238,83 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Find user to chat',
-          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        actions: <Widget>[
-          PopupMenuButton<Choice>(
-            onSelected: onItemMenuPress,
-            itemBuilder: (BuildContext context) {
-              return choices.map((Choice choice) {
-                return PopupMenuItem<Choice>(
-                    value: choice,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          choice.icon,
-                          color: primaryColor,
-                        ),
-                        Container(
-                          width: 10.0,
-                        ),
-                        Text(
-                          choice.title,
-                          style: TextStyle(color: primaryColor),
-                        ),
-                      ],
-                    ));
-              }).toList();
-            },
-          ),
+      body: PageView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: _pageController,
+        onPageChanged: onPageChanged,
+        children: <Widget>[
+          Chats(),
+          Friends(),
+          Home(),
+          Notifications(),
+          Profile(),
         ],
       ),
-      body: WillPopScope(
-        child: Stack(
-          children: <Widget>[
-            // List
-            Container(
-              child: StreamBuilder(
-                stream: Firestore.instance.collection('users').snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                      ),
-                    );
-                  } else {
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10.0),
-                      itemBuilder: (context, index) =>
-                          buildItem(context, snapshot.data.documents[index]),
-                      itemCount: snapshot.data.documents.length,
-                    );
-                  }
-                },
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          // sets the background color of the `BottomNavigationBar`
+          canvasColor: Theme.of(context).primaryColor,
+          // sets the active color of the `BottomNavigationBar` if `Brightness` is light
+          primaryColor: Theme.of(context).accentColor,
+          textTheme: Theme.of(context).textTheme.copyWith(
+                caption: TextStyle(color: Colors.grey[500]),
               ),
-            ),
-
-            // Loading
-            Positioned(
-              child: isLoading
-                  ? Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(themeColor)),
-                      ),
-                      color: Colors.white.withOpacity(0.8),
-                    )
-                  : Container(),
-            )
-          ],
         ),
-        onWillPop: onBackPress,
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.message,
+              ),
+              title: Container(height: 0.0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.group,
+              ),
+              title: Container(height: 0.0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+              ),
+              title: Container(height: 0.0),
+            ),
+            BottomNavigationBarItem(
+              icon: IconBadge(
+                icon: Icons.notifications,
+              ),
+              title: Container(height: 0.0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person,
+              ),
+              title: Container(height: 0.0),
+            ),
+          ],
+          onTap: navigationTapped,
+          currentIndex: _page,
+        ),
       ),
     );
+  }
+
+  void navigationTapped(int page) {
+    _pageController.jumpToPage(page);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
+  }
+
+  void onPageChanged(int page) {
+    setState(() {
+      this._page = page;
+    });
   }
 
   Widget buildItem(BuildContext context, DocumentSnapshot document) {

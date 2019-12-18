@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:holidays/const.dart';
-import 'package:holidays/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:holidays/const.dart';
+import 'package:holidays/main.dart';
+import 'package:holidays/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:holidays/widgets/animations.dart';
 
@@ -14,25 +15,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Holidays',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: themeColor,
-      ),
-      // darkTheme: ThemeData(
-      //   brightness: Brightness.dark,
-      // ),
-      home: LoginScreen(title: 'Holidays'),
+      title: Constants.appName,
+      theme: Constants.lightTheme,
+      darkTheme: Constants.darkTheme,
+      home: LoginScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   LoginScreenState createState() => LoginScreenState();
 }
@@ -152,9 +144,33 @@ class LoginScreenState extends State<LoginScreen> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image(image: AssetImage("assets/holidays-icon.png"), height: 150.0),
-              SizedBox(height: 50),
-              _signInButton(),
+              Image(
+                  image: AssetImage("assets/holidays-icon.png"), height: 150.0),
+              SizedBox(height: 20),
+              Stack(
+                children: <Widget>[
+                  Center(
+                    child: _signInButton(),
+                  ),
+                  // Loading
+                  Positioned(
+                    child: isLoading
+                        ? Container(
+                            color: Colors.white.withOpacity(0.5),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(themeColor),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
