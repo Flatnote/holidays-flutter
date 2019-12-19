@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class IconBadge extends StatefulWidget {
-
   final IconData icon;
   final double size;
   final Color color;
@@ -14,7 +13,6 @@ class IconBadge extends StatefulWidget {
 }
 
 class _IconBadgeState extends State<IconBadge> {
-
   int counter = 0;
 
   @override
@@ -33,28 +31,30 @@ class _IconBadgeState extends State<IconBadge> {
         ),
         Positioned(
           right: 0.0,
-          child: Container(
-            padding: EdgeInsets.all(1),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            constraints: BoxConstraints(
-              minWidth: 11,
-              minHeight: 11,
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(top: 1),
-              child:Text(
-                '16',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 9,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
+          child: counter > 0
+              ? Container(
+                  padding: EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 11,
+                    minHeight: 11,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 1),
+                    child: Text(
+                      counter.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : Container(),
         ),
       ],
     );

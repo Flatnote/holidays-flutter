@@ -15,10 +15,7 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(
-          'Profile',
-          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-        ),
+        title: new Text('Profile'),
         leading: new Text(''),
         centerTitle: true,
       ),
@@ -235,10 +232,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   Container(
                     child: Text(
                       'Nickname',
-                      style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor),
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     margin: EdgeInsets.only(left: 10.0, bottom: 5.0, top: 10.0),
                   ),
@@ -267,9 +261,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                     child: Text(
                       'About me',
                       style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     margin: EdgeInsets.only(left: 10.0, top: 30.0, bottom: 5.0),
                   ),

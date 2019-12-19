@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:holidays/util/const.dart';
 import 'package:holidays/util/data.dart';
 import 'package:holidays/widgets/chat_item.dart';
-
 
 class Chats extends StatefulWidget {
   @override
   _ChatsState createState() => _ChatsState();
 }
 
-class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin,
-    AutomaticKeepAliveClientMixin{
+class _ChatsState extends State<Chats>
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   TabController _tabController;
 
   @override
@@ -17,7 +17,6 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin,
     super.initState();
     _tabController = TabController(vsync: this, initialIndex: 0, length: 2);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin,
           icon: Icon(
             Icons.keyboard_backspace,
           ),
-          onPressed: (){},
+          onPressed: () {},
         ),
         title: TextField(
           decoration: InputDecoration.collapsed(
@@ -41,7 +40,7 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin,
             icon: Icon(
               Icons.filter_list,
             ),
-            onPressed: (){},
+            onPressed: () {},
           ),
         ],
         bottom: TabBar(
@@ -60,7 +59,6 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin,
           ],
         ),
       ),
-
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
@@ -116,12 +114,13 @@ class _ChatsState extends State<Chats> with SingleTickerProviderStateMixin,
           ),
         ],
       ),
-
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Constants.themeColor,
         child: Icon(
           Icons.add,
+          color: Constants.darkBG,
         ),
-        onPressed: (){},
+        onPressed: () {},
       ),
     );
   }

@@ -12,6 +12,8 @@ class Constants {
   static Color lightBG = Color(0xfffcfcff);
   static Color darkBG = Colors.black;
   static Color badgeColor = Colors.red;
+  static Color greyColor = Color(0xffaeaeae);
+  static Color greyColor2 = Color(0xffE8E8E8);
 
   static ThemeData lightTheme = ThemeData(
     backgroundColor: lightBG,

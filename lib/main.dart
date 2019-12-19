@@ -105,8 +105,8 @@ class MainScreenState extends State<MainScreen> {
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
       Platform.isAndroid
-          ? 'com.dfa.flutterchatdemo'
-          : 'com.duytq.flutterchatdemo',
+          ? 'com.flatnote.holidays'
+          : 'com.example.holidays',
       'Flutter chat demo',
       'your channel description',
       playSound: true,

@@ -5,7 +5,7 @@ class CreateEvent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create event"),
+        title: Text("Create holiday"),
       ),
       body: Center(
         child: RaisedButton(
