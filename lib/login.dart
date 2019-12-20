@@ -7,22 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:holidays/const.dart';
 import 'package:holidays/main.dart';
-import 'package:holidays/util/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:holidays/widgets/animations.dart';
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: Constants.appName,
-      theme: Constants.lightTheme,
-      darkTheme: Constants.darkTheme,
-      home: LoginScreen(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
 
 class LoginScreen extends StatefulWidget {
   @override

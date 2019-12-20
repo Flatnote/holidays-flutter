@@ -12,16 +12,85 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:holidays/chat.dart';
 import 'package:holidays/const.dart';
-import 'package:holidays/login.dart';
+import 'package:holidays/managers/app_manager.dart';
+import 'package:holidays/screens/auth/login.dart';
+import 'package:holidays/screens/auth/sign_up.dart';
 import 'package:holidays/screens/chats.dart';
 import 'package:holidays/screens/friends.dart';
 import 'package:holidays/screens/home.dart';
+import 'package:holidays/screens/intro/intro.dart';
 import 'package:holidays/screens/notifications.dart';
 import 'package:holidays/screens/profile.dart';
+import 'package:holidays/screens/root.dart';
+import 'package:holidays/services/api_service.dart';
 import 'package:holidays/settings.dart';
+import 'package:holidays/util/const.dart';
+import 'package:holidays/view_model/google_button.dart';
 import 'package:holidays/widgets/icon_badge.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+import 'screens/home.dart';
+import 'services/locator.dart';
+import 'view_model/entry.dart';
+import 'view_model/user.dart';
+import 'package:holidays/services/auth_service.dart';
+import 'package:holidays/models/user.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
+  await setupApi();
+  return runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => EntryViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => GoogleButtonViewModel(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+
+Future<void> setupApi() async {
+  await locator<ApiService>().clientSetup();
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<User>.value(
+      value: AuthService().user,
+      child: MaterialApp(
+        title: Constants.appName,
+        debugShowCheckedModeBanner: false,
+        theme: Constants.lightTheme,
+        darkTheme: Constants.darkTheme,
+        builder: (context, widget) => Navigator(
+          onGenerateRoute: (settings) => MaterialPageRoute(
+            builder: (context) => AppManager(
+              child: widget,
+            ),
+          ),
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Root(),
+          Intro.routeName: (context) => Intro(),
+          Login.routeName: (context) => Login(),
+          SignUp.routeName: (context) => SignUp(),
+          Home.routeName: (context) => Home(),
+        },
+      ),
+    );
+  }
+}
 
 class MainScreen extends StatefulWidget {
   final String currentUserId;
@@ -42,10 +111,6 @@ class MainScreenState extends State<MainScreen> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   bool isLoading = false;
-  List<Choice> choices = const <Choice>[
-    const Choice(title: 'Settings', icon: Icons.settings),
-    const Choice(title: 'Log out', icon: Icons.exit_to_app),
-  ];
 
   PageController _pageController;
   int _page = 2;
@@ -104,9 +169,7 @@ class MainScreenState extends State<MainScreen> {
 
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      Platform.isAndroid
-          ? 'com.flatnote.holidays'
-          : 'com.example.holidays',
+      Platform.isAndroid ? 'com.flatnote.holidays' : 'com.example.holidays',
       'Flutter chat demo',
       'your channel description',
       playSound: true,

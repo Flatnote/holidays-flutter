@@ -1,87 +1,56 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:holidays/screens/createEvent.dart';
-import 'package:holidays/util/data.dart';
-import 'package:holidays/widgets/holiday_item.dart';
-
-import '../util/const.dart';
+import 'package:holidays/models/user.dart';
+import 'package:holidays/screens/intro/intro.dart';
+import 'package:holidays/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
+  static const routeName = 'home';
+
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  var listMessage;
-  var listHoliday;
-
-  final ScrollController listScrollController = new ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Widget buildHolidayItem(int index, DocumentSnapshot document) {
-    return HolidayItem(
-        img: "assets/cm${random.nextInt(10)}.jpeg",
-        name: document['publicHolidayName'],
-        dp: "assets/cm${random.nextInt(10)}.jpeg",
-        time: "${random.nextInt(50)} min ago",
-        date: document['publicHolidayDate']);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Holidays"),
-        centerTitle: true,
-        leading: new Icon(Icons.camera_alt),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.filter_list,
-            ),
-            onPressed: () {},
+      body: Container(
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("This is a home",
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+              LogoutButton(),
+            ],
           ),
-        ],
-      ),
-      body: StreamBuilder(
-        stream: Firestore.instance
-            .collection('holidays')
-            .orderBy('publicHolidayDate', descending: true)
-            .limit(20)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-                child: CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Constants.themeColor)));
-          } else {
-            listMessage = snapshot.data.documents;
-            return ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              itemCount: listMessage.length,
-              itemBuilder: (context, index) =>
-                  buildHolidayItem(index, snapshot.data.documents[index]),
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Constants.themeColor,
-        child: Icon(
-          Icons.add,
-          color: Constants.darkBG,
         ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateEvent()),
-          );
-        },
+      ),
+    );
+  }
+}
+
+class LogoutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      color: Color(0xFF3C4858),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+      onPressed: () async {
+        final user = Provider.of<User>(context);
+        var signOutComplete = await AuthService().signOut(user.type);
+        if (signOutComplete != null) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              Intro.routeName, (Route<dynamic> route) => false);
+        }
+      },
+      child: Text(
+        'LOG OUT',
+        style: TextStyle(
+            color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.bold),
       ),
     );
   }
