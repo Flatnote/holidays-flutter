@@ -86,6 +86,7 @@ class MyApp extends StatelessWidget {
           Login.routeName: (context) => Login(),
           SignUp.routeName: (context) => SignUp(),
           Home.routeName: (context) => Home(),
+          Profile.routeName: (context) => Profile(),
         },
       ),
     );

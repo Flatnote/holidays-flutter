@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:holidays/models/user.dart';
+import 'package:holidays/services/auth_service.dart';
 import 'package:holidays/services/dialog_service.dart';
 import 'package:holidays/services/locator.dart';
 import 'package:holidays/view_model/base.dart';
@@ -18,10 +19,9 @@ class GoogleButtonViewModel extends BaseViewModel {
 
   User get userProfile => _userProfile;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  // sign in with email and password
+  // sign in with google
   Future<bool> signInWithGoogle(Map<String, String> formData) async {
     setStatus(ViewStatus.Loading);
     FirebaseUser user;
@@ -33,7 +33,7 @@ class GoogleButtonViewModel extends BaseViewModel {
         idToken: googleAuth.idToken,
       );
 
-      user = (await _auth.signInWithCredential(credential)).user;
+      user = await AuthService().signInWithGoogle(credential);
     } on PlatformException catch (error) {
       print(error.message);
       _dialogService.showAlertDialog(error.message);

@@ -165,7 +165,7 @@ class _LoginState extends State<Login> {
                                             Colors.white),
                                       )
                                     : Text(
-                                        'Let\'s go',
+                                        'Sign in',
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18.0),
@@ -188,23 +188,9 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     Container(
-                      child: RichText(
-                          text: TextSpan(
-                              style: Theme.of(context).textTheme.body1,
-                              children: [
-                            TextSpan(
-                              text: 'First time here? ',
-                            ),
-                            TextSpan(
-                                text: 'Sign Up',
-                                style: TextStyle(color: Color(0xFF3C4858)),
-                                recognizer: _signUpTapRecognizer),
-                          ])),
-                    ),
-                    Container(
                       width: 320,
                       height: 60,
-                      margin: EdgeInsets.only(top: 40, bottom: 30.0),
+                      margin: EdgeInsets.only(top: 10.0, bottom: 30.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30.0),
                         boxShadow: [
@@ -271,6 +257,20 @@ class _LoginState extends State<Login> {
                           ],
                         ),
                       ),
+                    ),
+                    Container(
+                      child: RichText(
+                          text: TextSpan(
+                              style: Theme.of(context).textTheme.body1,
+                              children: [
+                            TextSpan(
+                              text: 'First time here? ',
+                            ),
+                            TextSpan(
+                                text: 'Sign Up',
+                                style: TextStyle(color: Color(0xFF3C4858)),
+                                recognizer: _signUpTapRecognizer),
+                          ])),
                     ),
                   ],
                 ),

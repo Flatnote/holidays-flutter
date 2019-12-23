@@ -5,18 +5,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:holidays/const.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:holidays/const.dart';
+import 'package:holidays/screens/intro/intro.dart';
+import 'package:holidays/services/auth_service.dart';
+import 'package:holidays/view_model/base.dart';
+import 'package:holidays/view_model/user.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatelessWidget {
+  static const routeName = 'profile';
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Profile'),
-        leading: new Text(''),
         centerTitle: true,
       ),
       body: new ProfileScreen(),
@@ -291,20 +296,25 @@ class ProfileScreenState extends State<ProfileScreen> {
 
               // Button
               Container(
-                child: FlatButton(
+                child: RaisedButton(
+                  color: Color(0xFF3C4858),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
                   onPressed: handleUpdateData,
+                  padding: EdgeInsets.fromLTRB(30.0, 10.0, 30.0, 10.0),
                   child: Text(
                     'UPDATE',
-                    style: TextStyle(fontSize: 16.0),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold),
                   ),
-                  color: primaryColor,
-                  highlightColor: new Color(0xff8d93a0),
-                  splashColor: Colors.transparent,
-                  textColor: Colors.white,
-                  padding: EdgeInsets.fromLTRB(30.0, 10.0, 30.0, 10.0),
                 ),
                 margin: EdgeInsets.only(top: 50.0, bottom: 50.0),
               ),
+              Container(
+                child: LogoutButton(),
+              )
             ],
           ),
           padding: EdgeInsets.only(left: 15.0, right: 15.0),
@@ -323,6 +333,98 @@ class ProfileScreenState extends State<ProfileScreen> {
               : Container(),
         ),
       ],
+    );
+  }
+}
+
+class UpdateButton extends StatelessWidget {
+  void _handleLogin() async {
+    // final response = await Provider.of<UserViewModel>(context, listen: false)
+    //     .signInWithEmailAndPassword(_formData);
+    // if (response) {
+    //   Navigator.of(context).pushNamedAndRemoveUntil(
+    //       Home.routeName, (Route<dynamic> route) => false);
+    // }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 320,
+      height: 60,
+      margin: EdgeInsets.only(top: 40, bottom: 30.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: [
+          BoxShadow(
+              color: Color(0xFF3C4858).withOpacity(.4),
+              offset: Offset(10.0, 10.0),
+              blurRadius: 10.0),
+        ],
+      ),
+      child: RaisedButton(
+        color: Color(0xFF3C4858),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        onPressed: () {
+          if (Provider.of<UserViewModel>(context).viewStatus ==
+              ViewStatus.Loading) return;
+          _handleLogin();
+        },
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(left: 40.0),
+                child: Provider.of<UserViewModel>(context).viewStatus ==
+                        ViewStatus.Loading
+                    ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      )
+                    : Text(
+                        'Sign in',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      ),
+              ),
+            ),
+            Container(
+              height: 40.0,
+              width: 40.0,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+              child: Icon(
+                Icons.arrow_forward,
+                color: Color(0xFF3C4858),
+                size: 20.0,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LogoutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      color: Color(0xFF3C4858),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+      onPressed: () async {
+        var signOutComplete = await AuthService().signOut();
+        if (signOutComplete != null) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              Intro.routeName, (Route<dynamic> route) => false);
+        }
+      },
+      padding: EdgeInsets.fromLTRB(30.0, 10.0, 30.0, 10.0),
+      child: Text(
+        'LOG OUT',
+        style: TextStyle(
+            color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }
